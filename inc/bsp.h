@@ -25,7 +25,7 @@
  * sys level
  */
 #include "bsp_conf.h"
-#include "bsp_delay.h"
+// #include "bsp_delay.h"
 
 /*
  * device in bsp layer
@@ -36,13 +36,13 @@
 #include "bsp_spi.h"
 #include "bsp_uart.h"
 
-// #include "bsp_pwm.h"
+#include "bsp_pwm.h"
 // #include "bsp_pwm_pair.h"
 
 /*
  * chip
  */
-// #include "TPC1_S4_TR.h"
+#include "TPC1_S4_TR.h"
 
 /*
  * custom device

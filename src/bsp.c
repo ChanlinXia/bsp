@@ -81,9 +81,9 @@ static void* _BSP_GetById(ENUM_BSP_ID dev_type,uint8_t ind) {
             PWM_DevGet((struct dev_pwm**)&p_dev,ind);
             break;
 
-        case ENUM_DEVICE_PWM_PAIR_START:
-            PWMPair_DevGet((struct dev_pwm_pair**)&p_dev,ind);
-            break;
+        // case ENUM_DEVICE_PWM_PAIR_START:
+        //     PWMPair_DevGet((struct dev_pwm_pair**)&p_dev,ind);
+        //     break;
 
         case ENUM_CHIP_TPC1_S4_START:
             TPC1S4_DevGet((struct tpc1s4tr_t**)&p_dev,ind);

@@ -50,7 +50,7 @@ typedef struct chip_tpc1s4tr_impl
 static void tpc116s4tr_write(struct tpc1s4tr_t* self,chip_tpc1s4tr_channel_t channel,uint16_t data);
 static void tpc112s4tr_write(struct tpc1s4tr_t* self,chip_tpc1s4tr_channel_t channel,uint16_t data);
 static uint8_t set_data(chip_tpc1s4tr_channel_t channel,uint8_t* data,uint8_t chip_type);
-static void send_data(struct dev_spi* ptr_dev_spi,uint8_t* data,uint8_t data_len);
+static void send_data(chip_tpc1s4tr_impl* this,uint8_t* data,uint8_t data_len);
 static void set_output(struct tpc1s4tr_t* self,chip_tpc1s4tr_channel_t channel,double out_put);
 
 static void enable_cs(struct tpc1s4tr_t* self);
@@ -85,7 +85,6 @@ static chip_tpc1s4tr_impl s_chip_tpc1s4tr_list[CHIP_TPC1S4TR_NUM]={};
 static void enable_cs(struct tpc1s4tr_t* self) {
 	chip_tpc1s4tr_impl* this = (chip_tpc1s4tr_impl*)self;
 	this->ptr_dev_spi->vt->fall_cs(this->ptr_dev_spi);
-	this->load_pin->vt->set_down(this->load_pin);
 	// this->n_en_pin->vt->set_down(this->n_en_pin);
 }
 
@@ -128,7 +127,7 @@ static void tpc116s4tr_write(struct tpc1s4tr_t* self,chip_tpc1s4tr_channel_t cha
 		return;
 	}
 
-	send_data(this->ptr_dev_spi,bytes_to_send,3);
+	send_data(this,bytes_to_send,3);
 }
 
 /*********************************************************************************************************
@@ -153,7 +152,7 @@ static void tpc112s4tr_write(struct tpc1s4tr_t* self,chip_tpc1s4tr_channel_t cha
 		return;
 	}
 
-	send_data(this->ptr_dev_spi,bytes_to_send,2);
+	send_data(this,bytes_to_send,2);
 }
 
 /*********************************************************************************************************
@@ -165,12 +164,15 @@ static void tpc112s4tr_write(struct tpc1s4tr_t* self,chip_tpc1s4tr_channel_t cha
 *   @return  void
 *   @note
 *********************************************************************************************************/
-static void send_data(struct dev_spi* ptr_dev_spi,uint8_t* data,uint8_t data_len) {
-	ptr_dev_spi->vt->fall_cs(ptr_dev_spi);
+static void send_data(chip_tpc1s4tr_impl* this,uint8_t* data,uint8_t data_len) {
+	this->ptr_dev_spi->vt->fall_cs(this->ptr_dev_spi);
 
-	ptr_dev_spi->vt->transmit(ptr_dev_spi,data,data_len);
+	this->ptr_dev_spi->vt->transmit(this->ptr_dev_spi,data,data_len);
 
-	ptr_dev_spi->vt->rise_cs(ptr_dev_spi);
+	this->ptr_dev_spi->vt->rise_cs(this->ptr_dev_spi);
+
+	this->load_pin->vt->set_down(this->load_pin);
+
 }
 
 /*********************************************************************************************************
@@ -291,6 +293,8 @@ void TPC1S4_DevRegister(void* conf) {
 	obj->ptr_dev_spi = chip_conf->ptr_dev_spi;
 	obj->load_pin = chip_conf->load_pin;
 
+	// wakeup frame
+	set_output((struct tpc1s4tr_t*)obj, CHIP_TPC1S4TR_CHANNEL_A, 0.0);
 }
 
 /*********************************************************************************************************
