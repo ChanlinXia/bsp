@@ -25,12 +25,12 @@
  * sys level
  */
 #include "bsp_conf.h"
-// #include "bsp_delay.h"
+#include "bsp_delay.h"
 
 /*
  * device in bsp layer
  */
-// #include "bsp_adc.h"
+#include "bsp_adc.h"
 #include "bsp_gpio.h"
 
 #include "bsp_spi.h"

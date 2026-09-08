@@ -518,6 +518,33 @@ static void dev_pwm_load_oc_config(const dev_pwm_oc_config *cfg)
             default:
                 break;
         }
+    } 
+    else {
+        switch(cfg->channel)
+        {
+            case TIM_CHANNEL_1:
+                cfg->htim->Instance->CCMR1 &= ~TIM_CCMR1_OC1PE;
+                break;
+
+
+            case TIM_CHANNEL_2:
+                cfg->htim->Instance->CCMR1 &= ~TIM_CCMR1_OC2PE;
+                break;
+
+
+            case TIM_CHANNEL_3:
+                cfg->htim->Instance->CCMR2 &= ~TIM_CCMR2_OC3PE;
+                break;
+
+
+            case TIM_CHANNEL_4:
+                cfg->htim->Instance->CCMR2 &= ~TIM_CCMR2_OC4PE;
+                break;
+
+
+            default:
+                break;
+        }
     }
 
     /*
